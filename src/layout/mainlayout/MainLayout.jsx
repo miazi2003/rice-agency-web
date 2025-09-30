@@ -16,7 +16,7 @@ const MainLayout = () => {
           <h2 className="text-2xl font-bold text-violet-700 mb-6">Dashboard</h2>
           <nav className="flex flex-col gap-4">
             <NavLink
-              to="/dashboard"
+              to="/"
               end
               className={({ isActive }) =>
                 `px-3 py-2 rounded-md font-medium ${
@@ -75,6 +75,18 @@ const MainLayout = () => {
               }
             >
               Add Customer
+            </NavLink>
+            <NavLink
+              to="/dataGrid"
+              className={({ isActive }) =>
+                `px-3 py-2 rounded-md font-medium ${
+                  isActive
+                    ? "bg-violet-100 text-violet-700"
+                    : "text-gray-600 hover:bg-gray-100"
+                }`
+              }
+            >
+             Upcoming Orders
             </NavLink>
           </nav>
         </aside>

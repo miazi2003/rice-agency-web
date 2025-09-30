@@ -7,6 +7,10 @@ import {
   Legend,
 } from "chart.js";
 
+import EcommerceCustomersTable from "../../component/data grid/DataGrid";
+import EmployeesTable from "../../component/data grid/DataGrid";
+import CountUp from "react-countup";
+
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Dashboard = () => {
@@ -25,9 +29,15 @@ const Dashboard = () => {
     },
     {
       title: "Total Product Price",
-      value: "$1.2M",
+      value: 14353,
       change: "-0.5%",
       color: "bg-green-100 text-green-600",
+    },
+    {
+      title: "Total Order",
+      value: 102412,
+      change: "-0.5%",
+      color: "bg-red-100 text-black-600",
     },
   ];
 
@@ -64,23 +74,18 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-violet-700 text-center">💜 Product Dashboard</h1>
-        <p className="text-gray-600 text-center">Quick overview of business performance</p>
-      </header>
-
+    <div className="min-h-screen bg-gray-100">
       {/* Flex Layout */}
-      <div className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col lg:flex-row gap-3">
         {/* Left Side - Stats */}
-        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
+        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3">
           {stats.map((item, index) => (
             <div
               key={index}
               className="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition transform hover:scale-105"
             >
               <h2 className="text-lg font-semibold text-gray-700">{item.title}</h2>
-              <p className="text-3xl font-bold mt-2">{item.value}</p>
+              <p className="text-3xl font-bold mt-2"><CountUp end={item.value} /></p>
               <span
                 className={`inline-block mt-3 px-3 py-1 rounded-full text-sm font-medium ${item.color}`}
               >
@@ -91,15 +96,22 @@ const Dashboard = () => {
         </div>
 
         {/* Right Side - Chart */}
-        <div className="flex-1 bg-white p-6 rounded-2xl shadow">
+        <div className="flex-1 bg-white p-6 rounded-2xl  shadow hover:shadow-lg transition transform hover:scale-102">
           <h2 className="text-xl font-semibold text-gray-700 mb-4 text-center">
             📊 Products by Category
           </h2>
-          <div className="h-80">
+          <div className="h-52">
             <Doughnut data={chartData} options={chartOptions} />
           </div>
         </div>
+
+
+
+
       </div>
+
+
+<EmployeesTable></EmployeesTable>
     </div>
   );
 };
