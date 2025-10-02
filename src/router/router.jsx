@@ -9,6 +9,9 @@ import ProductsPage from "../pages/All Product/AllProduct";
 import CustomersPage from "../pages/client/AllClient";
 import CustomerAddForm from "../pages/cutomer add form/CustomerAddForm";
 import EmployeesTable from "../component/data grid/DataGrid";
+import AddOrderForm from "../pages/Add order/AddOrder";
+import LoginPage from "../pages/Auth/Log in/LogIn";
+import SignupPage from "../pages/Auth/Sign In/SignIn";
 
 
 export const router = createBrowserRouter([
@@ -22,6 +25,9 @@ export const router = createBrowserRouter([
         {path : "/allClient" , element : <CustomersPage></CustomersPage>},
         {path : "/addCustomer" , element : <CustomerAddForm></CustomerAddForm>},
         {path : "/dataGrid" , element : <EmployeesTable></EmployeesTable>},
+        {path : "/addOrder" , element : <AddOrderForm></AddOrderForm>},
+        {path : "/login" , element : <LoginPage></LoginPage>},
+        {path : "/signUp" , element : <SignupPage></SignupPage>}
     ]
   },
 ]);

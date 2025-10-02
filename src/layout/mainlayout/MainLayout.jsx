@@ -88,6 +88,18 @@ const MainLayout = () => {
             >
              Upcoming Orders
             </NavLink>
+            <NavLink
+              to="/addOrder"
+              className={({ isActive }) =>
+                `px-3 py-2 rounded-md font-medium ${
+                  isActive
+                    ? "bg-violet-100 text-violet-700"
+                    : "text-gray-600 hover:bg-gray-100"
+                }`
+              }
+            >
+      Add Order
+            </NavLink>
           </nav>
         </aside>
 

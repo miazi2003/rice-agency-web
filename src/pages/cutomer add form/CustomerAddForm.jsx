@@ -1,31 +1,44 @@
 import React, { useState } from "react";
-// import SquareImageUploader from "../components/SquareImageUploader"; // update path accordingly
 
 const CustomerAddForm = () => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [imageList, setImageList] = useState([]);
-//   const [resetKey, setResetKey] = useState(Date.now()); // for resetting uploader if needed
+
+  // Temporary "DB"
+  const [customers, setCustomers] = useState([
+
+  ]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Generate new ID
+    let newId = 1;
+    if (customers.length > 0) {
+      const maxId = Math.max(...customers.map((c) => c.id));
+      newId = maxId + 1;
+    }
+
     const newCustomer = {
+      id: newId,
       name,
       address,
       phone,
-      image: imageList[0] || "", // just take the first uploaded image
+      image: imageList[0] || "",
     };
 
     console.log("Customer Data:", newCustomer);
-    // TODO: send newCustomer to backend API
+
+    // Save to "DB"
+    setCustomers([...customers, newCustomer]);
 
     // Reset form
     setName("");
     setAddress("");
     setPhone("");
     setImageList([]);
-    // setResetKey(Date.now());
   };
 
   return (
@@ -80,10 +93,7 @@ const CustomerAddForm = () => {
         {/* Image Upload */}
         <div className="mb-6">
           <label className="block text-gray-700 font-medium mb-1">Profile Image</label>
-          {/* <SquareImageUploader
-            onUpload={(urls) => setImageList(urls)}
-            clearKey={resetKey}
-          /> */}
+          {/* Image uploader here */}
         </div>
 
         {/* Submit Button */}
@@ -94,6 +104,8 @@ const CustomerAddForm = () => {
           Add Customer
         </button>
       </form>
+
+     
     </div>
   );
 };

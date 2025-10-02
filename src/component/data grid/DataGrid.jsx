@@ -20,7 +20,7 @@ const EmployeesTable = () => {
   });
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
+    <div className=" mx-auto">
       {/* Card container */}
       <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
         {/* Title */}
@@ -31,13 +31,13 @@ const EmployeesTable = () => {
           <input
             type="text"
             placeholder="🔍 Search by name..."
-            className="input input-bordered w-full md:w-1/2 rounded-xl border-gray-300 focus:ring-2 focus:ring-green-400"
+            className="input input-bordered w-full md:w-1/2 rounded-xl border-gray-300 focus:ring-2 focus:ring-purple-300"
             value={searchName}
             onChange={(e) => setSearchName(e.target.value)}
           />
           <input
             type="date"
-            className="input input-bordered w-full md:w-1/2 rounded-xl border-gray-300 focus:ring-2 focus:ring-green-400"
+            className="input input-bordered w-full md:w-1/2 rounded-xl border-gray-300 focus:ring-2 focus:ring-purple-300"
             value={searchDate}
             onChange={(e) => setSearchDate(e.target.value)}
           />
@@ -46,7 +46,7 @@ const EmployeesTable = () => {
         {/* Table */}
         <div className="overflow-x-auto rounded-xl border border-gray-200">
           <table className="table w-full">
-            <thead className="bg-green-500 text-white">
+            <thead className="bg-[#7F22FE] text-white">
               <tr>
                 <th className="px-4 py-2">#</th>
                 <th className="px-4 py-2">Name</th>
@@ -60,7 +60,7 @@ const EmployeesTable = () => {
                 filteredEmployees.map((emp, index) => (
                   <tr
                     key={emp.id}
-                    className={`hover:bg-green-50 transition ${
+                    className={`hover:bg-purple-50 transition ${
                       index % 2 === 0 ? "bg-gray-50" : "bg-white"
                     }`}
                   >
