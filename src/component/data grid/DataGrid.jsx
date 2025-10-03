@@ -1,36 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-const EmployeesTable = () => {
-  // Example array of data
-  const employeesData = [
-    { id: 1, name: "Cy Ganderton", job: "Quality Control Specialist", color: "Blue", date: "2025-09-20" },
-    { id: 2, name: "Hart Hagerty", job: "Desktop Support Technician", color: "Purple", date: "2025-09-22" },
-    { id: 3, name: "Brice Swyre", job: "Tax Accountant", color: "Red", date: "2025-09-25" },
-    { id: 4, name: "Jane Doe", job: "Software Engineer", color: "Green", date: "2025-09-28" },
-  ];
-
+const NotificationsTable = () => {
+  const [notifications, setNotifications] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [searchDate, setSearchDate] = useState("");
 
+  // Fetch notifications from backend
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/notifications");
+        setNotifications(res.data);
+      } catch (err) {
+        console.error("Error fetching notifications:", err);
+      }
+    };
+    fetchNotifications();
+  }, []);
+
   // Filter logic
-  const filteredEmployees = employeesData.filter((emp) => {
-    const matchesName = emp.name.toLowerCase().includes(searchName.toLowerCase());
-    const matchesDate = searchDate ? emp.date === searchDate : true;
+  const filteredNotifications = notifications.filter((n) => {
+    const matchesName = n.customerName.toLowerCase().includes(searchName.toLowerCase());
+    const matchesDate = searchDate ? n.date === searchDate : true;
     return matchesName && matchesDate;
   });
 
   return (
-    <div className=" mx-auto">
+    <div className="mx-auto">
       {/* Card container */}
       <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
         {/* Title */}
-        <h2 className="text-2xl font-bold text-gray-700 mb-6">Upcoming orders</h2>
+        <h2 className="text-2xl font-bold text-gray-700 mb-6">Notifications</h2>
 
         {/* Search inputs */}
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <input
             type="text"
-            placeholder="🔍 Search by name..."
+            placeholder="🔍 Search by customer name..."
             className="input input-bordered w-full md:w-1/2 rounded-xl border-gray-300 focus:ring-2 focus:ring-purple-300"
             value={searchName}
             onChange={(e) => setSearchName(e.target.value)}
@@ -49,26 +56,26 @@ const EmployeesTable = () => {
             <thead className="bg-[#7F22FE] text-white">
               <tr>
                 <th className="px-4 py-2">#</th>
-                <th className="px-4 py-2">Name</th>
-                <th className="px-4 py-2">Job</th>
-                <th className="px-4 py-2">Favorite Color</th>
+                <th className="px-4 py-2">Customer Name</th>
+                <th className="px-4 py-2">Customer ID</th>
+                <th className="px-4 py-2">Message</th>
                 <th className="px-4 py-2">Date</th>
               </tr>
             </thead>
             <tbody>
-              {filteredEmployees.length > 0 ? (
-                filteredEmployees.map((emp, index) => (
+              {filteredNotifications.length > 0 ? (
+                filteredNotifications.map((n, index) => (
                   <tr
-                    key={emp.id}
+                    key={n._id}
                     className={`hover:bg-purple-50 transition ${
                       index % 2 === 0 ? "bg-gray-50" : "bg-white"
                     }`}
                   >
-                    <td className="px-4 py-3 font-medium text-gray-600">{emp.id}</td>
-                    <td className="px-4 py-3">{emp.name}</td>
-                    <td className="px-4 py-3">{emp.job}</td>
-                    <td className="px-4 py-3">{emp.color}</td>
-                    <td className="px-4 py-3">{emp.date}</td>
+                    <td className="px-4 py-3 font-medium text-gray-600">{index + 1}</td>
+                    <td className="px-4 py-3">{n.customerName}</td>
+                    <td className="px-4 py-3">{n.customerID}</td>
+                    <td className="px-4 py-3">{n.message}</td>
+                    <td className="px-4 py-3">{n.date}</td>
                   </tr>
                 ))
               ) : (
@@ -86,4 +93,4 @@ const EmployeesTable = () => {
   );
 };
 
-export default EmployeesTable;
+export default NotificationsTable;

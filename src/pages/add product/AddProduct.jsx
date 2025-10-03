@@ -1,44 +1,36 @@
-import React, { useState } from "react";
-
+import React from "react";
+import axios from "axios";
+// import SquareImageUploader from "./SquareImageUploader"; // uncomment if using uploader
 
 const AddProductForm = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    details: "",
-    price: "",
-    quality: "",
-  });
-  const [imageList, setImageList] = useState([]);
-  // const [resetKey, setResetKey] = useState(0);
+  // Optional: for image uploader reset
+  // const [resetKey, setResetKey] = React.useState(0);
+  const [imageList, setImageList] = React.useState([]);
 
-  // handle form input change
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // submit handler
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    const form = e.target;
 
     const productData = {
-      ...formData,
-      price: parseFloat(formData.price),
-      images: imageList, // uploaded image URLs
+      name: form.name.value,
+      category: form.category.value,
+      details: form.details.value,
+      price: parseFloat(form.price.value),
+      quality: form.quality.value,
+      images: imageList, // array of uploaded images
     };
 
-    console.log("Product Submitted:", productData);
-    // TODO: send productData to backend via axios/fetch
-
-    // reset form after submit
-    setFormData({
-      name: "",
-      details: "",
-      price: "",
-      quality: "",
-    });
-    setImageList([]);
-    // setResetKey((prev) => prev + 1); // clear uploader
+    try {
+      const res = await axios.post("http://localhost:5000/products", productData);
+      console.log("✅ Product Added:", res.data);
+      alert("Product added successfully!");
+      form.reset();
+      setImageList([]);
+      // setResetKey(prev => prev + 1); // if using uploader
+    } catch (error) {
+      console.error("❌ Error adding product:", error);
+      alert("Failed to add product!");
+    }
   };
 
   return (
@@ -52,8 +44,18 @@ const AddProductForm = () => {
           <input
             type="text"
             name="name"
-            value={formData.name}
-            onChange={handleChange}
+            className="w-full border rounded px-3 py-2"
+            required
+          />
+        </div>
+
+        {/* Category */}
+        <div>
+          <label className="block font-medium">Category</label>
+          <input
+            type="text"
+            name="category"
+            placeholder="Rice, Sugar, Flour, Oil, etc."
             className="w-full border rounded px-3 py-2"
             required
           />
@@ -64,8 +66,6 @@ const AddProductForm = () => {
           <label className="block font-medium">Details</label>
           <textarea
             name="details"
-            value={formData.details}
-            onChange={handleChange}
             rows="3"
             className="w-full border rounded px-3 py-2"
             required
@@ -74,12 +74,10 @@ const AddProductForm = () => {
 
         {/* Price */}
         <div>
-          <label className="block font-medium">Price</label>
+          <label className="block font-medium">Price (BDT)</label>
           <input
             type="number"
             name="price"
-            value={formData.price}
-            onChange={handleChange}
             className="w-full border rounded px-3 py-2"
             required
           />
@@ -90,8 +88,6 @@ const AddProductForm = () => {
           <label className="block font-medium">Quality</label>
           <select
             name="quality"
-            value={formData.quality}
-            onChange={handleChange}
             className="w-full border rounded px-3 py-2"
             required
           >
@@ -103,13 +99,13 @@ const AddProductForm = () => {
         </div>
 
         {/* Image Upload */}
-        <div>
+        {/* <div>
           <label className="block font-medium mb-2">Upload Product Image</label>
-          {/* <SquareImageUploader
+          <SquareImageUploader
             onUpload={(urls) => setImageList(urls)}
             clearKey={resetKey}
-          /> */}
-        </div>
+          />
+        </div> */}
 
         {/* Submit */}
         <button

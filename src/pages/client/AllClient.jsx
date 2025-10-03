@@ -1,21 +1,34 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 const CustomersPage = () => {
-  // Example customer data (replace with API call)
-  const customers = [
-    { id: 1, name: "John Doe", address: "123 Main St, NY", image: "https://via.placeholder.com/150?text=John" },
-    { id: 2, name: "Jane Smith", address: "456 Elm St, CA", image: "https://via.placeholder.com/150?text=Jane" },
-    { id: 3, name: "Michael Brown", address: "789 Oak St, TX", image: "https://via.placeholder.com/150?text=Michael" },
-    { id: 4, name: "Emily Johnson", address: "321 Pine St, FL", image: "https://via.placeholder.com/150?text=Emily" },
-    { id: 5, name: "David Wilson", address: "654 Maple St, IL", image: "https://via.placeholder.com/150?text=David" },
-    { id: 6, name: "Olivia Davis", address: "987 Cedar St, WA", image: "https://via.placeholder.com/150?text=Olivia" },
-    { id: 7, name: "Daniel Lee", address: "135 Spruce St, CO", image: "https://via.placeholder.com/150?text=Daniel" },
-    { id: 8, name: "Sophia Martinez", address: "246 Birch St, GA", image: "https://via.placeholder.com/150?text=Sophia" },
-    { id: 9, name: "James Anderson", address: "357 Walnut St, NV", image: "https://via.placeholder.com/150?text=James" },
-    { id: 10, name: "Mia Thomas", address: "468 Chestnut St, OH", image: "https://via.placeholder.com/150?text=Mia" },
-    { id: 11, name: "William Jackson", address: "579 Poplar St, AZ", image: "https://via.placeholder.com/150?text=William" },
-    { id: 12, name: "Ava White", address: "680 Fir St, MI", image: "https://via.placeholder.com/150?text=Ava" },
-  ];
+
+  const [customers , setCustomers] = useState([])
+  // // Example customer data (replace with API call)
+  // const customers = [
+  //   { id: 1, name: "John Doe", address: "123 Main St, NY", image: "https://via.placeholder.com/150?text=John" },
+  //   { id: 2, name: "Jane Smith", address: "456 Elm St, CA", image: "https://via.placeholder.com/150?text=Jane" },
+  //   { id: 3, name: "Michael Brown", address: "789 Oak St, TX", image: "https://via.placeholder.com/150?text=Michael" },
+  //   { id: 4, name: "Emily Johnson", address: "321 Pine St, FL", image: "https://via.placeholder.com/150?text=Emily" },
+  //   { id: 5, name: "David Wilson", address: "654 Maple St, IL", image: "https://via.placeholder.com/150?text=David" },
+  //   { id: 6, name: "Olivia Davis", address: "987 Cedar St, WA", image: "https://via.placeholder.com/150?text=Olivia" },
+  //   { id: 7, name: "Daniel Lee", address: "135 Spruce St, CO", image: "https://via.placeholder.com/150?text=Daniel" },
+  //   { id: 8, name: "Sophia Martinez", address: "246 Birch St, GA", image: "https://via.placeholder.com/150?text=Sophia" },
+  //   { id: 9, name: "James Anderson", address: "357 Walnut St, NV", image: "https://via.placeholder.com/150?text=James" },
+  //   { id: 10, name: "Mia Thomas", address: "468 Chestnut St, OH", image: "https://via.placeholder.com/150?text=Mia" },
+  //   { id: 11, name: "William Jackson", address: "579 Poplar St, AZ", image: "https://via.placeholder.com/150?text=William" },
+  //   { id: 12, name: "Ava White", address: "680 Fir St, MI", image: "https://via.placeholder.com/150?text=Ava" },
+  // ];
+
+  useEffect(()=>{
+    const fetchUsers = async() =>{
+      const res = await axios.get("http://localhost:5000/customers")
+      console.log(res.data)
+      setCustomers(res.data)
+    }
+    fetchUsers()
+  },[])
+
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -30,7 +43,7 @@ const CustomersPage = () => {
             {/* Customer Image */}
             <div className="overflow-hidden rounded-t-3xl">
               <img
-                src={customer.image}
+                src={customer.images[0]}
                 alt={customer.name}
                 className="w-full h-48 object-cover transition-transform duration-300 hover:scale-105"
               />
@@ -40,6 +53,7 @@ const CustomersPage = () => {
             <div className="p-4">
               <h2 className="font-semibold text-lg text-gray-800">{customer.name}</h2>
               <p className="text-gray-500 text-sm mt-1">{customer.address}</p>
+              <p className="text-gray-500 text-sm mt-1">{customer.phone}</p>
 
               {/* View Button */}
               <div className="mt-4">
