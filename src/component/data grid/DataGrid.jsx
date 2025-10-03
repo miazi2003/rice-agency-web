@@ -10,7 +10,7 @@ const NotificationsTable = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/notifications");
+        const res = await axios.get("http://localhost:5000/notifications");
         setNotifications(res.data);
       } catch (err) {
         console.error("Error fetching notifications:", err);
