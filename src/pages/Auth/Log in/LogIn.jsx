@@ -1,18 +1,29 @@
-import React from "react";
+import React, { useContext } from "react";
+import { AuthContext } from "../../../context/AuthContext";
 
 const LoginPage = () => {
-  const handleLoginSubmit = (e) => {
-    e.preventDefault();
 
-    const form = e.target;
-    const loginData = {
-      email: form.email.value,
-      password: form.password.value,
-    };
+  const {signInUser} = useContext(AuthContext)
 
-    console.log("Login Data:", loginData); // later send to DB
+const handleLoginSubmit = async (e) => {
+  e.preventDefault();
+
+  const form = e.target;
+  const loginData = {
+    email: form.email.value,
+    password: form.password.value,
   };
 
+  try {
+    const res = await signInUser(loginData.email, loginData.password);
+    console.log("User logged in:", res.user); // <-- this is correct
+
+    alert(`Welcome, ${res.user.displayName || res.user.email}`);
+  } catch (err) {
+    console.error("Login error:", err);
+    alert(err.message || "Failed to login");
+  }
+}; 
   return (
     <div className="flex items-center justify-center min-h-screen bg-purple-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-lg">

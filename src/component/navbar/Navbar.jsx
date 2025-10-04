@@ -1,6 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { AuthContext } from '../../context/AuthContext';
 
 const Navbar = () => {
+
+  const {user , logOutUser} = useContext(AuthContext)
+  console.log(user?.email)
+
+  const LogOut = async() =>{
+logOutUser()
+  }
     return (
      <div className="navbar bg-base-100 shadow-sm">
   <div className="navbar-start">
@@ -40,7 +48,7 @@ const Navbar = () => {
     </ul>
   </div>
   <div className="navbar-end">
-    <a className="btn">Button</a>
+    {user ? <a className="btn" onClick={()=>{LogOut()}}>Log Out</a> : <a className="btn">Log in</a>}
   </div>
 </div>
     );
