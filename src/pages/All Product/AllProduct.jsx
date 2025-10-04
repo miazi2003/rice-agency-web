@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router";
 
 const ProductsPage = () => {
   const [products , setProducts] = useState([])
@@ -56,9 +57,10 @@ fetchProducts()
 
               {/* View Button */}
               <div className="mt-4">
+              <Link to={`/products/${product.productID}`}>
                 <button className="w-full bg-violet-600 text-white py-2 rounded-lg hover:bg-violet-700 transition">
                   View
-                </button>
+                </button></Link>
               </div>
             </div>
           </div>

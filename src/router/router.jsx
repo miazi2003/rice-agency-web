@@ -12,6 +12,8 @@ import EmployeesTable from "../component/data grid/DataGrid";
 import AddOrderForm from "../pages/Add order/AddOrder";
 import LoginPage from "../pages/Auth/Log in/LogIn";
 import SignupPage from "../pages/Auth/Sign In/SignIn";
+import CustomerDetailsPage from "../component/customerDetails/CustomerDetails";
+import ProductDetailsPage from "../component/product details/ProductDetails";
 
 
 export const router = createBrowserRouter([
@@ -27,7 +29,9 @@ export const router = createBrowserRouter([
         {path : "/dataGrid" , element : <EmployeesTable></EmployeesTable>},
         {path : "/addOrder" , element : <AddOrderForm></AddOrderForm>},
         {path : "/login" , element : <LoginPage></LoginPage>},
-        {path : "/signUp" , element : <SignupPage></SignupPage>}
+        {path : "/signUp" , element : <SignupPage></SignupPage>},
+        {path : "/customer/:customerID" , element : <CustomerDetailsPage></CustomerDetailsPage>},
+        {path : "/products/:productID" , element :<ProductDetailsPage></ProductDetailsPage> },
     ]
   },
 ]);

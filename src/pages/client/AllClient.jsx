@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router";
 
 const CustomersPage = () => {
 
@@ -57,9 +58,11 @@ const CustomersPage = () => {
 
               {/* View Button */}
               <div className="mt-4">
-                <button className="w-full bg-violet-600 text-white py-2 rounded-lg hover:bg-violet-700 transition">
+        <Link to={`/customer/${customer.customerID}`}>
+        <button className="w-full bg-violet-600 text-white py-2 rounded-lg hover:bg-violet-700 transition">
                   View
                 </button>
+        </Link>
               </div>
             </div>
           </div>
