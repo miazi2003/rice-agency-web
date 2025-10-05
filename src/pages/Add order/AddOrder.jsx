@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import useAxiosSecure from "../../hook/UseAxiosSecure";
 
 const AddOrderForm = () => {
   const [customers, setCustomers] = useState([]);
@@ -7,6 +7,7 @@ const AddOrderForm = () => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [selectedProduct, setSelectedProduct] = useState("");
   const [addedProducts, setAddedProducts] = useState([]);
+    const axiosSecure = useAxiosSecure()
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -14,10 +15,10 @@ const AddOrderForm = () => {
     const fetchData = async () => {
       try {
         // Fetch customers from customerCollection
-        const customerRes = await axios.get("http://localhost:5000/customers");
+        const customerRes = await axiosSecure.get("http://localhost:5000/customers");
         setCustomers(customerRes.data);
 
-        const productRes = await axios.get("http://localhost:5000/products");
+        const productRes = await axiosSecure.get("http://localhost:5000/products");
         setProducts(productRes.data);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -64,10 +65,10 @@ const AddOrderForm = () => {
 
     try {
       // Insert into orders collection
-      await axios.post("http://localhost:5000/orders", orderData);
+      await axiosSecure.post("http://localhost:5000/orders", orderData);
 
       // Update lastOrder in customerCollection
-      await axios.put(`http://localhost:5000/customers/lastOrder/${selectedCustomer.customerID}`, {
+      await axiosSecure.put(`http://localhost:5000/customers/lastOrder/${selectedCustomer.customerID}`, {
         lastOrder: addedProducts.map((p) => ({ ...p, orderDate: today })),
       });
 

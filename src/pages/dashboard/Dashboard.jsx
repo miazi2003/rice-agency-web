@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -7,13 +7,16 @@ import {
   Legend,
 } from "chart.js";
 
-import EcommerceCustomersTable from "../../component/data grid/DataGrid";
-import EmployeesTable from "../../component/data grid/DataGrid";
+
 import CountUp from "react-countup";
+import { AuthContext } from "../../context/AuthContext";
+import NotificationsTable from "../../component/data grid/DataGrid";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Dashboard = () => {
+
+  const {user} = useContext(AuthContext)
   const stats = [
     {
       title: "Total Customers",
@@ -109,9 +112,9 @@ const Dashboard = () => {
 
 
       </div>
+{user ? 
+<NotificationsTable></NotificationsTable> : "Login first"}
 
-
-<EmployeesTable></EmployeesTable>
     </div>
   );
 };

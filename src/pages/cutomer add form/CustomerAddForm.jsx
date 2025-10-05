@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
+import useAxiosSecure from "../../hook/UseAxiosSecure";
 //import SquareImageUploader from "./SquareImageUploader"; // adjust path if needed
 
 const AddCustomerForm = () => {
   const [imageList, setImageList] = useState([]);
  // const [resetKey, setResetKey] = useState(0); // for clearing uploader after submit
-
+  const axiosSecure = useAxiosSecure()
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -24,7 +24,7 @@ const AddCustomerForm = () => {
     };
 
     try {
-      const res = await axios.post("http://localhost:5000/customers", newCustomer);
+      const res = await axiosSecure.post("http://localhost:5000/customers", newCustomer);
       console.log("✅ Customer added:", res.data);
       alert("Customer added successfully!");
       

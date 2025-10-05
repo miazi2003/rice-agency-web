@@ -1,12 +1,12 @@
 import React from "react";
-import axios from "axios";
+import useAxiosSecure from "../../hook/UseAxiosSecure";
 // import SquareImageUploader from "./SquareImageUploader"; // uncomment if using uploader
 
 const AddProductForm = () => {
   // Optional: for image uploader reset
   // const [resetKey, setResetKey] = React.useState(0);
   const [imageList, setImageList] = React.useState([]);
-
+  const axiosSecure = useAxiosSecure()
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
@@ -21,7 +21,7 @@ const AddProductForm = () => {
     };
 
     try {
-      const res = await axios.post("http://localhost:5000/products", productData);
+      const res = await axiosSecure.post("http://localhost:5000/products", productData);
       console.log("✅ Product Added:", res.data);
       alert("Product added successfully!");
       form.reset();

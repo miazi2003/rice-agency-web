@@ -1,12 +1,12 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
-import axios from "axios";
+import useAxiosSecure from "../../../hook/UseAxiosSecure";
 
 const SignupPage = () => {
   const { signUpUser, updateUser } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const axiosSecure = useAxiosSecure()
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -41,7 +41,7 @@ const SignupPage = () => {
         role: "user",
       };
 
-      const apiRes = await axios.post("http://localhost:5000/users", userForDB);
+      const apiRes = await axiosSecure.post("http://localhost:5000/users", userForDB);
       console.log("User saved in DB:", apiRes.data);
 
       form.reset();

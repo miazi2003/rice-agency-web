@@ -48,7 +48,7 @@ logOutUser()
     </ul>
   </div>
   <div className="navbar-end">
-    {user ? <a className="btn" onClick={()=>{LogOut()}}>Log Out</a> : <a className="btn">Log in</a>}
+    {user ? <a className="btn" onClick={()=>{LogOut()}}>Log Out</a> : <a className="btn" href='/login'>Log in</a>}
   </div>
 </div>
     );

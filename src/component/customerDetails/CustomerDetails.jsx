@@ -1,13 +1,14 @@
-import axios from "axios";
+
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import useAxiosSecure from "../../hook/UseAxiosSecure";
 
 const CustomerDetailsPage = () => {
   const { customerID } = useParams();
   const [customer, setCustomer] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const axiosSecure = useAxiosSecure()
   // Helper to format date in Bangladesh timezone
   const formatBDDate = (dateString) => {
     if (!dateString) return "-";
@@ -21,11 +22,11 @@ const CustomerDetailsPage = () => {
     const fetchCustomerData = async () => {
       try {
         // Fetch single customer by customerID
-        const customerRes = await axios.get(`http://localhost:5000/customers/${customerID}`);
+        const customerRes = await axiosSecure.get(`http://localhost:5000/customers/${customerID}`);
         setCustomer(customerRes.data);
 
         // Fetch orders for this customer (backend should filter by customerID)
-        const ordersRes = await axios.get(`http://localhost:5000/orders/customer/${customerID}`);
+        const ordersRes = await axiosSecure.get(`http://localhost:5000/orders/customer/${customerID}`);
         setOrders(ordersRes.data);
       } catch (error) {
         console.error("Error fetching customer data:", error);

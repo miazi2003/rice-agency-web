@@ -1,9 +1,10 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
+import useAxiosSecure from "../../hook/UseAxiosSecure";
 
 const ProductsPage = () => {
   const [products , setProducts] = useState([])
+    const axiosSecure = useAxiosSecure()
   // const products = [
   //   { id: 1, name: "Wireless Headphones", price: 99.99, quality: "High", image: "https://via.placeholder.com/300x300?text=Product+1" },
   //   { id: 2, name: "Smart Watch", price: 149.99, quality: "Medium", image: "https://via.placeholder.com/300x300?text=Product+2" },
@@ -21,7 +22,7 @@ const ProductsPage = () => {
 
   useEffect(()=>{
 const fetchProducts = async() =>{
-  const res = await axios.get("http://localhost:5000/products")
+  const res = await axiosSecure.get("http://localhost:5000/products")
   console.log(res.data)
 setProducts(res.data)
 }

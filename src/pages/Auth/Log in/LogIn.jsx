@@ -1,33 +1,38 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
+import { useLocation, useNavigate } from "react-router";
 
 const LoginPage = () => {
+  const { signInUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation()
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
 
-  const {signInUser} = useContext(AuthContext)
+    const form = e.target;
+    const loginData = {
+      email: form.email.value,
+      password: form.password.value,
+    };
 
-const handleLoginSubmit = async (e) => {
-  e.preventDefault();
+    try {
+      const res = await signInUser(loginData.email, loginData.password);
+      console.log("User logged in:", res.user); // <-- this is correct
 
-  const form = e.target;
-  const loginData = {
-    email: form.email.value,
-    password: form.password.value,
+      alert(`Welcome, ${res.user.displayName || res.user.email}`);
+
+      navigate(location.state?.pathname || "/");
+    } catch (err) {
+      console.error("Login error:", err);
+      alert(err.message || "Failed to login");
+    }
   };
-
-  try {
-    const res = await signInUser(loginData.email, loginData.password);
-    console.log("User logged in:", res.user); // <-- this is correct
-
-    alert(`Welcome, ${res.user.displayName || res.user.email}`);
-  } catch (err) {
-    console.error("Login error:", err);
-    alert(err.message || "Failed to login");
-  }
-}; 
   return (
     <div className="flex items-center justify-center min-h-screen bg-purple-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-lg">
-        <h2 className="text-2xl font-bold text-center text-purple-700">Login</h2>
+        <h2 className="text-2xl font-bold text-center text-purple-700">
+          Login
+        </h2>
         <form className="space-y-4" onSubmit={handleLoginSubmit}>
           <input
             type="email"
@@ -55,5 +60,4 @@ const handleLoginSubmit = async (e) => {
   );
 };
 
-
-export default LoginPage
+export default LoginPage;

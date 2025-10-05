@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import useAxiosSecure from "../../hook/UseAxiosSecure";
+
 
 const NotificationsTable = () => {
   const [notifications, setNotifications] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [searchDate, setSearchDate] = useState("");
+  const axiosSecure = useAxiosSecure()
 
   // Fetch notifications from backend
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/notifications");
+        const res = await axiosSecure.get("http://localhost:5000/notifications");
         setNotifications(res.data);
       } catch (err) {
         console.error("Error fetching notifications:", err);

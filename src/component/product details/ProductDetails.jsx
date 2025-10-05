@@ -1,16 +1,17 @@
-import axios from "axios";
+
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import useAxiosSecure from "../../hook/UseAxiosSecure";
 
 const ProductDetailsPage = () => {
   const { productID } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const axiosSecure = useAxiosSecure()
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/products/${productID}`);
+        const res = await axiosSecure.get(`http://localhost:5000/products/${productID}`);
         setProduct(res.data);
       } catch (error) {
         console.error("Error fetching product:", error);

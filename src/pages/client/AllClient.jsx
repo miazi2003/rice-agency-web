@@ -1,9 +1,9 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
+import useAxiosSecure from "../../hook/UseAxiosSecure";
 
 const CustomersPage = () => {
-
+  const axiosSecure = useAxiosSecure()
   const [customers , setCustomers] = useState([])
   // // Example customer data (replace with API call)
   // const customers = [
@@ -23,7 +23,7 @@ const CustomersPage = () => {
 
   useEffect(()=>{
     const fetchUsers = async() =>{
-      const res = await axios.get("http://localhost:5000/customers")
+      const res = await axiosSecure.get("http://localhost:5000/customers")
       console.log(res.data)
       setCustomers(res.data)
     }
