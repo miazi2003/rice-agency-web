@@ -27,7 +27,9 @@ const SignupPage = () => {
 
     setLoading(true);
     try {
+
       // 1️⃣ Firebase Signup
+      
       const res = await signUpUser(signupData.email, signupData.password);
       console.log("Firebase signup successful:", res.user);
 

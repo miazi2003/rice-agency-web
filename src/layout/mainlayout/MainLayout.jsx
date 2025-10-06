@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import Navbar from "../../component/navbar/Navbar";
 import { Outlet, NavLink } from "react-router";
 import Footer from "../../component/footer/Footer";
+import { AuthContext } from "../../context/AuthContext";
 
 const MainLayout = () => {
+  const {user} = useContext(AuthContext);
+  const role = user?.role;
+  console.log(role)
   return (
     <div className="flex flex-col min-h-screen">
       {/* Navbar */}
@@ -28,6 +32,22 @@ const MainLayout = () => {
             >
               Overview
             </NavLink>
+                        <NavLink
+              to="/allProducts"
+              className={({ isActive }) =>
+                `px-3 py-2 rounded-md font-medium ${
+                  isActive
+                    ? "bg-violet-100 text-violet-700"
+                    : "text-gray-600 hover:bg-gray-100"
+                }`
+              }
+            >
+              Products
+            </NavLink>
+
+
+
+{  role === "admin" && <>
             <NavLink
               to="/allClient"
               className={({ isActive }) =>
@@ -39,18 +59,6 @@ const MainLayout = () => {
               }
             >
               Customers
-            </NavLink>
-            <NavLink
-              to="/allProducts"
-              className={({ isActive }) =>
-                `px-3 py-2 rounded-md font-medium ${
-                  isActive
-                    ? "bg-violet-100 text-violet-700"
-                    : "text-gray-600 hover:bg-gray-100"
-                }`
-              }
-            >
-              Products
             </NavLink>
             <NavLink
               to="/addProduct"
@@ -99,12 +107,17 @@ const MainLayout = () => {
               }
             >
       Add Order
-            </NavLink>
+            </NavLink></>
+
+
+
+
+}
           </nav>
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-6">
+        <main className="flex-1">
           <Outlet />
         </main>
       </div>

@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react";
 import { auth } from "../firebase/firebase.init";
 import { AuthContext } from "./AuthContext";
 import useAxiosSecure from "../hook/UseAxiosSecure";
+import axios from "axios";
 
 
 const AuthProvider = ({ children }) => {
@@ -42,12 +43,22 @@ const AuthProvider = ({ children }) => {
     const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setLoading(true);
       if (currentUser?.email) {
-        const jwtRes = await axiosSecure.post("http://localhost:5000/jwt", {
-          email: currentUser?.email,
-        });
-        console.log(jwtRes.data);
+      const jwtRes = await axios.post("http://localhost:5000/jwt", {
+    email: currentUser?.email,
+  }, { withCredentials: true });
+  console.log("JWT received:", jwtRes.data);
 
-        setUser(currentUser);
+      const res = await axiosSecure.get(
+  `http://localhost:5000/users?email=${currentUser?.email}`
+);
+        const userFromDb = res.data;
+console.log(userFromDb.role)
+      setUser({
+  email: currentUser.email,
+  displayName: currentUser.displayName,
+  uid: currentUser.uid,
+  role: userFromDb?.role || "user"
+});
         console.log("user auth", currentUser?.email);
       } else {
         setUser(null);

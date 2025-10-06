@@ -5,12 +5,13 @@ const Navbar = () => {
 
   const {user , logOutUser} = useContext(AuthContext)
   console.log(user?.email)
+  console.log(user?.role)
 
   const LogOut = async() =>{
 logOutUser()
   }
     return (
-     <div className="navbar bg-base-100 shadow-sm">
+     <div className="navbar bg-[#A7003C] shadow-sm">
   <div className="navbar-start">
     <div className="dropdown">
       <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -30,25 +31,11 @@ logOutUser()
         <li><a>Item 3</a></li>
       </ul>
     </div>
-    <a className="btn btn-ghost text-xl">daisyUI</a>
+    <a  href='/'><img className='w-18 h-18' src="https://i.ibb.co.com/0yyB7f1x/photo-2025-10-06-22-39-14.jpg" alt="" /></a>
   </div>
-  <div className="navbar-center hidden lg:flex">
-    <ul className="menu menu-horizontal px-1">
-      <li><a>Item 1</a></li>
-      <li>
-        <details>
-          <summary>Parent</summary>
-          <ul className="p-2">
-            <li><a>Submenu 1</a></li>
-            <li><a>Submenu 2</a></li>
-          </ul>
-        </details>
-      </li>
-      <li><a>Item 3</a></li>
-    </ul>
-  </div>
+
   <div className="navbar-end">
-    {user ? <a className="btn" onClick={()=>{LogOut()}}>Log Out</a> : <a className="btn" href='/login'>Log in</a>}
+    {user ? <a className="btn bg-yellow-300 rounded-4xl" onClick={()=>{LogOut()}}>Log Out</a> : <a className="btn bg-yellow-300 rounded-4xl" href='/login'>Log in</a>}
   </div>
 </div>
     );
