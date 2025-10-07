@@ -1,10 +1,11 @@
 import React from "react";
 import useAxiosSecure from "../../hook/UseAxiosSecure";
-// import SquareImageUploader from "./SquareImageUploader"; // uncomment if using uploader
+import SquareImageUploader from "../../component/Image Upload/SquareImageUpload";
+ // uncomment if using uploader
 
 const AddProductForm = () => {
   // Optional: for image uploader reset
-  // const [resetKey, setResetKey] = React.useState(0);
+   const [resetKey, setResetKey] = React.useState(0);
   const [imageList, setImageList] = React.useState([]);
   const axiosSecure = useAxiosSecure()
   const handleSubmit = async (e) => {
@@ -26,7 +27,7 @@ const AddProductForm = () => {
       alert("Product added successfully!");
       form.reset();
       setImageList([]);
-      // setResetKey(prev => prev + 1); // if using uploader
+      setResetKey(prev => prev + 1); // if using uploader
     } catch (error) {
       console.error("❌ Error adding product:", error);
       alert("Failed to add product!");
@@ -99,13 +100,13 @@ const AddProductForm = () => {
         </div>
 
         {/* Image Upload */}
-        {/* <div>
+        { <div>
           <label className="block font-medium mb-2">Upload Product Image</label>
           <SquareImageUploader
             onUpload={(urls) => setImageList(urls)}
             clearKey={resetKey}
           />
-        </div> */}
+        </div> }
 
         {/* Submit */}
         <button

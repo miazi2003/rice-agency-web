@@ -30,9 +30,9 @@ const NotificationsTable = () => {
   return (
     <>
     
-    <div className="  px-2 sm:px-4 ">
+    <div className=" sm:px-4 ">
       {/* Card container */}
-      <div className="bg-white rounded-2xl shadow-lg p-4  border border-gray-200 lg:w-full w-[80%]">
+      <div className="bg-white rounded-2xl shadow-lg p-4  border border-gray-200 lg:w-full ">
         {/* Title */}
         <h2 className="text-xl sm:text-2xl font-bold text-gray-700 mb-4 sm:mb-6">
           Notifications
@@ -58,33 +58,27 @@ const NotificationsTable = () => {
     </div>
     
        {/* Table wrapper for horizontal scroll */}
-      <div className="overflow-x-auto w-full">
-  <table className="table table-zebra">
-    {/* head */}
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Customer Name</th>
-        <th>Customer ID</th>
-        <th>Message</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody>
+      <div className="overflow-x-auto w-full md:p-8 px-0 py-2 rounded-2xl">
+        <h1 className="text-center p-4 bg-black text-white">Upcoming Orders</h1>
  {filteredNotifications.length > 0 ? (
                   filteredNotifications.map((n, index) => (
-                    <tr
+                    <div
                       key={n._id}
                       className={`hover:bg-purple-50 transition ${
                         index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                      }`}
+                      } flex lg:flex-row flex-col w-full h-auto justify-around p-4 border-b`}
                     >
-                      <td className=" font-medium text-gray-600">{index + 1}</td>
-                      <td className="">{n.customerName}</td>
-                      <td className="">{n.customerID}</td>
-                      <td className="">{n.message}</td>
-                      <td className="">{n.date}</td>
-                    </tr>
+ 
+                      <div className="flex lg:flex-row flex-col gap-4 md:w-1/2 w-full p-2">
+                        <span className="">{n.customerID}</span>
+                        <p className="font-bold ">{n.customerName}</p>
+                      </div>
+
+                      <div className="flex lg:flex-row flex-col gap-4 lg:w-1/2 w-full p-2">
+                         <p className="">{n.message}</p>
+                      <p className="">{n.date}</p>
+                      </div>
+                    </div>
                   ))
                 ) : (
                   <tr>
@@ -94,8 +88,7 @@ const NotificationsTable = () => {
                   </tr>
                 )}
 
-    </tbody>
-  </table>
+
 </div>
     
     </>

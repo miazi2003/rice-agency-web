@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import useAxiosSecure from "../../hook/UseAxiosSecure";
-//import SquareImageUploader from "./SquareImageUploader"; // adjust path if needed
+import SquareImageUploader from "../../component/Image Upload/SquareImageUpload";
+// adjust path if needed
 
 const AddCustomerForm = () => {
   const [imageList, setImageList] = useState([]);
- // const [resetKey, setResetKey] = useState(0); // for clearing uploader after submit
+  const [resetKey, setResetKey] = useState(0); // for clearing uploader after submit
   const axiosSecure = useAxiosSecure()
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = e.target;
 
-    // if (imageList.length === 0) {
-    //   alert("Please upload at least one image!");
-    //   return;
-    // }
+    if (imageList.length === 0) {
+      alert("Please upload at least one image!");
+      return;
+     }
 
     const newCustomer = {
       name: form.name.value,
@@ -30,7 +31,7 @@ const AddCustomerForm = () => {
       
       form.reset(); // clear form fields
       setImageList([]); // clear uploader
-      //setResetKey(prev => prev + 1); // reset uploader component if needed
+    setResetKey(prev => prev + 1); // reset uploader component if needed
     } catch (error) {
       console.error("❌ Error adding customer:", error);
       alert("Failed to add customer!");
@@ -89,13 +90,13 @@ const AddCustomerForm = () => {
         </div>
 
         {/* Image Uploader */}
-        {/* <div>
+        { <div>
           <label className="block text-sm font-medium">Upload Images</label>
           <SquareImageUploader
             onUpload={(urls) => setImageList(urls)}
             clearKey={resetKey} // resets uploader on submit
           />
-        </div> */}
+        </div> }
 
         {/* Submit */}
         <button
