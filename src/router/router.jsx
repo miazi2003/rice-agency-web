@@ -1,7 +1,7 @@
 import {
   createBrowserRouter
 } from "react-router";
-import MainLayout from "../layout/mainlayout/mainLayout";
+import MainLayout from "../layout/mainlayout/MainLayout";
 import Home from "../pages/home/Home";
 import Dashboard from "../pages/dashboard/Dashboard";
 import AddProductForm from "../pages/add product/AddProduct";

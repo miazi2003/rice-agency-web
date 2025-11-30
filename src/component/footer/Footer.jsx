@@ -1,56 +1,130 @@
-import React from 'react';
+import React from "react";
+
+// Define the two brand color variables
+const PRIMARY_COLOR = "#A7003C"; // Rich Reddish-Maroon
+const SECONDARY_COLOR = "#AB50FF"; // Vibrant Violet/Purple
+
+const socialLinks = [
+  {
+    href: "#",
+    label: "Twitter",
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="28" // Increased size
+        height="28" // Increased size
+        viewBox="0 0 24 24"
+        className="fill-current"
+      >
+        <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045C7.828 7.633 4.2 5.673 1.771 2.694c-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+      </svg>
+    ),
+  },
+  {
+    href: "#",
+    label: "YouTube",
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="28" // Increased size
+        height="28" // Increased size
+        viewBox="0 0 24 24"
+        className="fill-current"
+      >
+        <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
+      </svg>
+    ),
+  },
+  {
+    href: "#",
+    label: "Facebook",
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="28" // Increased size
+        height="28" // Increased size
+        viewBox="0 0 24 24"
+        className="fill-current"
+      >
+        <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
+      </svg>
+    ),
+  },
+];
 
 const Footer = () => {
-    return (
-    <footer className="footer sm:footer-horizontal bg-neutral text-neutral-content p-10">
-  <aside> 
-<img src="https://i.ibb.co.com/0yyB7f1x/photo-2025-10-06-22-39-14.jpg" alt="" className='h-24 w-24' />
-    <p>
-      Rice agency Ltd.
-      <br />
-      Providing reliable service since 2020
-    </p>
-  </aside>
-  <nav>
-    <h6 className="footer-title">Social</h6>
-    <div className="grid grid-flow-col gap-4">
-      <a>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          className="fill-current">
-          <path
-            d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path>
-        </svg>
-      </a>
-      <a>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          className="fill-current">
-          <path
-            d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
-        </svg>
-      </a>
-      <a>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          className="fill-current">
-          <path
-            d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"></path>
-        </svg>
-      </a>
-    </div>
-  </nav>
-</footer>
-    );
+  return (
+    <footer 
+      // MODIFICATION: Set display to flex on medium screens and up (md:flex)
+      // Use flex-col for small screens, gap for spacing, and justify-between for distribution
+      className="footer p-10 bg-gray-900 text-white border-t-4 flex flex-col md:flex-row md:justify-around gap-8" 
+      style={{ borderColor: PRIMARY_COLOR }} // Primary color border accent
+    >
+      
+      {/* Company Info (Logo/Name) Section - Takes a third of the space on desktop */}
+      <aside className="flex flex-col items-start space-y-3 md:w-1/3">
+        <div className="flex items-center space-x-4">
+          <img
+            src="https://i.ibb.co.com/0yyB7f1x/photo-2025-10-06-22-39-14.jpg"
+            alt="Rice Agency Logo"
+            className="h-16 w-16 rounded-full object-cover shadow-lg" 
+            loading="lazy"
+          />
+          <span className="text-2xl font-extrabold tracking-wider" style={{ color: PRIMARY_COLOR }}>
+            Rice Agency
+          </span>
+        </div>
+        
+        <p className="text-gray-400 max-w-xs">
+          Providing <span className="font-semibold" style={{ color: SECONDARY_COLOR }}>reliable service</span> and quality products since 2020.
+        </p>
+        <p className="text-sm text-gray-500 mt-4">
+            &copy; {new Date().getFullYear()} Rice Agency Ltd. All rights reserved.
+        </p>
+      </aside>
+
+      {/* Social Links Section - Takes a third of the space on desktop */}
+      <nav className="md:w-1/3">
+        <h6 
+          className="text-xl font-bold mb-4 uppercase tracking-wider" 
+          style={{ color: SECONDARY_COLOR }} // Secondary color title
+        >
+          Connect
+        </h6>
+        <div className="grid grid-flow-col gap-6 justify-start">
+          {socialLinks.map(({ href, label, icon }) => (
+            <a
+              key={label}
+              href={href}
+              aria-label={label}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:scale-125 transition-transform duration-300 text-white p-2 rounded-full transform"
+              style={{ 
+                  backgroundColor: SECONDARY_COLOR, // Secondary color background for icons
+                  boxShadow: `0 0 10px ${SECONDARY_COLOR}50` // Subtle glow effect
+              }}
+            >
+              {icon}
+            </a>
+          ))}
+        </div>
+      </nav>
+      
+      {/* Quick Links Nav - Takes a third of the space on desktop */}
+      <nav className="md:w-1/3">
+         <h6 
+          className="text-xl font-bold mb-4 uppercase tracking-wider" 
+          style={{ color: SECONDARY_COLOR }}
+        >
+          Quick Links
+        </h6>
+        <a className="link link-hover text-gray-400 hover:text-white transition block mb-2">Home</a>
+        <a className="link link-hover text-gray-400 hover:text-white transition block mb-2">Services</a>
+        <a className="link link-hover text-gray-400 hover:text-white transition block">Contact</a>
+      </nav>
+    </footer>
+  );
 };
 
-export default Footer;
+export default React.memo(Footer);

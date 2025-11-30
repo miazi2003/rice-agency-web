@@ -8,14 +8,14 @@ import {
 import React, { useEffect, useState } from "react";
 import { auth } from "../firebase/firebase.init";
 import { AuthContext } from "./AuthContext";
-import useAxiosSecure from "../hook/UseAxiosSecure";
+
 import axios from "axios";
 
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const axiosSecure = useAxiosSecure()
+
   const signUpUser = async (email, password) => {
     setLoading(true);
     const res = await createUserWithEmailAndPassword(auth, email, password);
@@ -38,37 +38,47 @@ const AuthProvider = ({ children }) => {
       photoURL: photo,
     });
   };
+useEffect(() => {
+  const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    setLoading(true);
 
-  useEffect(() => {
-    const unSubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setLoading(true);
-      if (currentUser?.email) {
-      const jwtRes = await axios.post("http://localhost:5000/jwt", {
-    email: currentUser?.email,
-  }, { withCredentials: true });
-  console.log("JWT received:", jwtRes.data);
+    if (currentUser?.email) {
+      try {
+        // 1️⃣ Get JWT first
+        await axios.post(
+          "https://rice-agency-server.vercel.app/jwt",
+          { email: currentUser.email },
+          { withCredentials: true }
+        );
 
-      const res = await axiosSecure.get(
-  `http://localhost:5000/users?email=${currentUser?.email}`
-);
+        // 2️⃣ Now JWT is ready — use normal axios (not axiosSecure) for user role
+        const res = await axios.get(
+          `https://rice-agency-server.vercel.app/users?email=${currentUser.email}`,
+          { withCredentials: true }
+        );
+
         const userFromDb = res.data;
-console.log(userFromDb.role)
-      setUser({
-  email: currentUser.email,
-  displayName: currentUser.displayName,
-  uid: currentUser.uid,
-  role: userFromDb?.role || "user"
-});
-        console.log("user auth", currentUser?.email);
-      } else {
-        setUser(null);
+
+        // 3️⃣ Save user info
+        setUser({
+          email: currentUser.email,
+          displayName: currentUser.displayName,
+          uid: currentUser.uid,
+          role: userFromDb?.role || "user",
+        });
+      } catch (error) {
+        console.error("Auth load error:", error);
       }
+    } else {
+      setUser(null);
+    }
 
-      setLoading(false);
-    });
+    setLoading(false);
+  });
 
-    return () => unSubscribe();
-  }, []);
+  return () => unSubscribe();
+}, []);
+
 
   const userInfo = {
     user,

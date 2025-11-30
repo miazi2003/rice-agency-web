@@ -1,95 +1,145 @@
-import React from "react";
+import React, { useState } from "react";
 import useAxiosSecure from "../../hook/UseAxiosSecure";
-import SquareImageUploader from "../../component/Image Upload/SquareImageUpload";
- // uncomment if using uploader
+import Swal from "sweetalert2";
 
-const AddProductForm = () => {
-  // Optional: for image uploader reset
-   const [resetKey, setResetKey] = React.useState(0);
-  const [imageList, setImageList] = React.useState([]);
-  const axiosSecure = useAxiosSecure()
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const form = e.target;
+// Define the two brand color variables
+const PRIMARY_COLOR = "#A7003C"; // Rich Reddish-Maroon
+const SECONDARY_COLOR = "#AB50FF"; // Vibrant Violet/Purple
 
-    const productData = {
-      name: form.name.value,
-      category: form.category.value,
-      details: form.details.value,
-      price: parseFloat(form.price.value),
-      quality: form.quality.value,
-      images: imageList, // array of uploaded images
-    };
+const AddProductForm = React.memo(() => {
+  const axiosSecure = useAxiosSecure();
+  const [isLoading, setIsLoading] = useState(false);
 
-    try {
-      const res = await axiosSecure.post("http://localhost:5000/products", productData);
-      console.log("✅ Product Added:", res.data);
-      alert("Product added successfully!");
-      form.reset();
-      setImageList([]);
-      setResetKey(prev => prev + 1); // if using uploader
-    } catch (error) {
-      console.error("❌ Error adding product:", error);
-      alert("Failed to add product!");
-    }
+  // Common styles for inputs and labels
+  const inputClass = "w-full border rounded-xl p-3 bg-white shadow-inner focus:outline-none focus:ring-2 transition";
+  const labelClass = "block font-bold mb-1 text-gray-800 text-sm";
+  
+  // Custom focus style derived from Secondary Color
+  const focusStyle = {
+    '--tw-ring-color': SECONDARY_COLOR,
+    borderColor: PRIMARY_COLOR + '40',
   };
 
-  return (
-    <div className="max-w-lg mx-auto p-6 bg-white shadow rounded-lg">
-      <h2 className="text-2xl font-bold mb-4">Add New Product</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Name */}
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
+
+  const form = e.target;
+
+  const productData = {
+    name: form.name.value.trim(),
+    category: form.category.value.trim(),
+    details: form.details.value.trim(),
+    price: parseFloat(form.price.value),
+    quality: form.quality.value,
+  };
+
+  try {
+    const res = await axiosSecure.post("/products", productData);
+    console.log("✅ Product Added:", res.data);
+
+    // SUCCESS ALERT
+    Swal.fire({
+      title: "পণ্য যুক্ত হয়েছে",
+      text: "আপনার পণ্য যুক্ত হয়েছে",
+      icon: "success",
+      draggable: true,
+      confirmButtonColor: "#3085d6",
+    });
+
+    form.reset();
+
+  } catch (error) {
+    console.error("❌ Error adding product:", error);
+
+    // ERROR ALERT
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "আপনার পণ্য যুক্ত হয়নি, আবার চেষ্টা করুন",
+      confirmButtonColor: "#d33",
+    });
+
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+  return (
+    <div 
+      className="max-w-lg mx-auto p-8 bg-white rounded-2xl shadow-2xl border-t-4"
+      style={{ borderColor: PRIMARY_COLOR }}
+    >
+      {/* Title - Primary Color */}
+      <h2 
+        className="text-3xl font-extrabold mb-8 text-center"
+        style={{ color: PRIMARY_COLOR }}
+      >
+        Add New Product 🛍️
+      </h2>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        
+        {/* Product Name */}
         <div>
-          <label className="block font-medium">Product Name</label>
+          <label className={labelClass}>Product Name</label>
           <input
             type="text"
             name="name"
-            className="w-full border rounded px-3 py-2"
+            placeholder="Enter product name"
+            className={inputClass}
+            style={focusStyle}
             required
           />
         </div>
 
         {/* Category */}
         <div>
-          <label className="block font-medium">Category</label>
+          <label className={labelClass}>Category</label>
           <input
             type="text"
             name="category"
-            placeholder="Rice, Sugar, Flour, Oil, etc."
-            className="w-full border rounded px-3 py-2"
+            placeholder="e.g. Rice, Sugar, Oil"
+            className={inputClass}
+            style={focusStyle}
             required
           />
         </div>
 
         {/* Details */}
         <div>
-          <label className="block font-medium">Details</label>
+          <label className={labelClass}>Details</label>
           <textarea
             name="details"
             rows="3"
-            className="w-full border rounded px-3 py-2"
+            placeholder="Enter product details..."
+            className={inputClass}
+            style={focusStyle}
             required
-          />
+          ></textarea>
         </div>
 
         {/* Price */}
         <div>
-          <label className="block font-medium">Price (BDT)</label>
+          <label className={labelClass}>Price (BDT)</label>
           <input
             type="number"
             name="price"
-            className="w-full border rounded px-3 py-2"
+            placeholder="Enter price"
+            className={inputClass}
+            style={focusStyle}
             required
           />
         </div>
 
         {/* Quality */}
         <div>
-          <label className="block font-medium">Quality</label>
+          <label className={labelClass}>Quality</label>
           <select
             name="quality"
-            className="w-full border rounded px-3 py-2"
+            className={inputClass}
+            style={focusStyle}
             required
           >
             <option value="">Select Quality</option>
@@ -99,25 +149,19 @@ const AddProductForm = () => {
           </select>
         </div>
 
-        {/* Image Upload */}
-        { <div>
-          <label className="block font-medium mb-2">Upload Product Image</label>
-          <SquareImageUploader
-            onUpload={(urls) => setImageList(urls)}
-            clearKey={resetKey}
-          />
-        </div> }
-
-        {/* Submit */}
+        {/* Submit Button - Secondary Color */}
         <button
           type="submit"
-          className="bg-violet-700 hover:bg-violet-300 hover:text-black duration-200 text-white px-4 py-2 rounded"
+          disabled={isLoading}
+          className={`w-full text-white py-3 px-4 rounded-xl font-extrabold text-lg transition shadow-xl mt-8 duration-300 
+          hover:brightness-110 active:scale-[0.98] ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
+          style={{ backgroundColor: SECONDARY_COLOR }}
         >
-          Add Product
+          {isLoading ? "Adding Product..." : "Add Product"}
         </button>
       </form>
     </div>
   );
-};
+});
 
 export default AddProductForm;

@@ -1,18 +1,22 @@
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 import { useParams } from "react-router";
 import useAxiosSecure from "../../hook/UseAxiosSecure";
+
+// Define the two brand color variables
+const PRIMARY_COLOR = "#A7003C"; // Rich Reddish-Maroon
+const SECONDARY_COLOR = "#AB50FF"; // Vibrant Violet/Purple
 
 const ProductDetailsPage = () => {
   const { productID } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const axiosSecure = useAxiosSecure()
+  const axiosSecure = useAxiosSecure();
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axiosSecure.get(`http://localhost:5000/products/${productID}`);
-        setProduct(res.data);
+        const { data } = await axiosSecure.get(`/products/${productID}`);
+        setProduct(data);
       } catch (error) {
         console.error("Error fetching product:", error);
       } finally {
@@ -21,45 +25,84 @@ const ProductDetailsPage = () => {
     };
 
     fetchProduct();
-  }, [productID]);
+  }, [axiosSecure, productID]);
 
+  // --- Loading State ---
   if (loading)
-    return <div className="p-10 text-center text-violet-700 font-bold">Loading...</div>;
+    return (
+      <div className="p-10 text-center text-xl font-bold" style={{ color: PRIMARY_COLOR }}>
+        Loading Product Details... ⏳
+      </div>
+    );
 
+  // --- Not Found State ---
   if (!product)
-    return <div className="p-10 text-center text-red-600">Product not found!</div>;
+    return (
+      <div className="p-10 text-center text-xl font-medium text-red-600">
+        Product with ID "{productID}" not found! ❌
+      </div>
+    );
 
+  // --- Main Product Details UI ---
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      {/* Product Info */}
-      <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col md:flex-row gap-6">
-        {/* Images */}
-        <div className="flex-1">
-          {product.images?.length > 0 ? (
-            <img
-              src={product.images[0]}
-              alt={product.name}
-              className="w-full h-80 object-cover rounded-2xl border-4 border-violet-500"
-            />
-          ) : (
-            <div className="w-full h-80 bg-gray-200 rounded-2xl flex items-center justify-center">
-              No Image Available
-            </div>
-          )}
-        </div>
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-10">
+      <div 
+        // Removed flex-row classes and width settings to let the content fill the card
+        className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl p-6 md:p-10"
+        style={{ borderTop: `6px solid ${PRIMARY_COLOR}` }}
+      >
+        
+        {/* Product Details Section - Now full width */}
+        <div className="space-y-5">
+          {/* Product Name - Primary Color */}
+          <h1 
+            className="text-3xl lg:text-4xl font-extrabold pb-2 border-b"
+            style={{ color: PRIMARY_COLOR, borderColor: PRIMARY_COLOR }}
+          >
+            {product.name}
+          </h1>
 
-        {/* Product Details */}
-        <div className="flex-1 flex flex-col justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-violet-700 mb-4">{product.name}</h1>
-            <p className="text-gray-600 text-lg mb-2">Price: <span className="font-bold text-xl text-violet-700">৳{product.price}</span></p>
-            <p className="text-gray-600 text-lg mb-2">Category: {product.category || "-"}</p>
-            <p className="text-gray-600 text-lg mb-2">Quality: {product.quality || "-"}</p>
-            <p className="text-gray-600 text-lg mb-2">Description: {product.description || "No description available."}</p>
+          <div className="space-y-3 text-gray-700 text-lg">
+            
+            {/* Price - Secondary Color Accent */}
+            <p className="flex justify-between items-center pb-2 border-b border-gray-100">
+              <span className="font-semibold text-gray-800">Price:</span>{" "}
+              <span className="text-xl font-extrabold" style={{ color: SECONDARY_COLOR }}>
+                ৳{product.price ?? "N/A"}
+              </span>
+            </p>
+
+            {/* Category */}
+            <p className="flex justify-between items-center pb-2 border-b border-gray-100">
+              <span className="font-semibold text-gray-800">Category:</span>{" "}
+              <span className="text-gray-600">{product.category || "N/A"}</span>
+            </p>
+            
+            {/* Quality */}
+            <p className="flex justify-between items-center pb-2 border-b border-gray-100">
+              <span className="font-semibold text-gray-800">Quality:</span>{" "}
+              <span className="text-gray-600">{product.quality || "N/A"}</span>
+            </p>
           </div>
 
-          <button className="mt-6 w-full bg-violet-600 text-white py-3 rounded-xl hover:bg-violet-700 transition">
-            The product only for showcase
+          {/* Description */}
+          <div className="pt-4">
+             <h3 className="font-bold text-xl mb-2" style={{ color: PRIMARY_COLOR }}>
+                Product Description:
+             </h3>
+             <p className="text-gray-700 leading-relaxed text-base italic">
+                {product.description || "No detailed description available for this item."}
+             </p>
+          </div>
+
+          {/* Button - Secondary Color for Attention */}
+          <button
+            type="button"
+            disabled
+            className="mt-6 w-full text-white py-3 rounded-xl shadow-lg cursor-not-allowed font-bold text-lg opacity-90 transition duration-300"
+            style={{ backgroundColor: SECONDARY_COLOR }}
+          >
+            This product is for showcase only 💎
           </button>
         </div>
       </div>
@@ -67,4 +110,4 @@ const ProductDetailsPage = () => {
   );
 };
 
-export default ProductDetailsPage;
+export default memo(ProductDetailsPage);

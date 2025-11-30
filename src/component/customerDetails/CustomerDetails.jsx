@@ -1,112 +1,231 @@
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, memo } from "react";
 import { useParams } from "react-router";
 import useAxiosSecure from "../../hook/UseAxiosSecure";
 
-const CustomerDetailsPage = () => {
+const PRIMARY_COLOR_HEX = "#A7003C";
+
+// ===============================
+// 🔹 Memoized Order Card
+// ===============================
+const OrderCard = memo(({ order, formatBDDate }) => (
+  <div
+    className="bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300 p-6 border-l-4"
+    style={{ borderColor: PRIMARY_COLOR_HEX }}
+  >
+    <div className="flex justify-between items-center mb-3 border-b pb-2">
+      <p className="text-gray-500 text-xs font-medium uppercase">
+        Order ID: {order._id?.slice(-8)}
+      </p>
+      <p className="text-gray-800 text-sm font-medium">
+        🗓 Date: {formatBDDate(order.orderDate)}
+      </p>
+    </div>
+
+    <h4 className="font-semibold text-xl mb-3" style={{ color: PRIMARY_COLOR_HEX }}>
+      Products Ordered
+    </h4>
+
+    <ul className="list-disc pl-5 space-y-1">
+      {order.products?.map((prod, idx) => (
+        <li key={idx} className="text-gray-700 text-base">
+          {prod.productName}
+        </li>
+      ))}
+    </ul>
+
+    {order.futureOrderDate && (
+      <div className="mt-4 pt-3 border-t border-dashed">
+        <p className="text-sm font-semibold text-green-700 flex items-center">
+          <span className="mr-2">⏳</span> Future Order Date:{" "}
+          {formatBDDate(order.futureOrderDate)}
+        </p>
+      </div>
+    )}
+  </div>
+));
+
+// ===============================
+// 🔹 Recommended Product Card
+// ===============================
+const RecommendedProductCard = memo(({ product }) => (
+  <div className="bg-white p-5 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition">
+    <h3 className="font-bold text-lg" style={{ color: PRIMARY_COLOR_HEX }}>
+      {product.productName}
+    </h3>
+  </div>
+));
+
+// ===============================
+// 🔹 Main Component
+// ===============================
+const CustomerDetailsPage = memo(() => {
   const { customerID } = useParams();
+  const axiosSecure = useAxiosSecure();
+
   const [customer, setCustomer] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [recommended, setRecommended] = useState([]); 
   const [loading, setLoading] = useState(true);
-  const axiosSecure = useAxiosSecure()
-  // Helper to format date in Bangladesh timezone
-  const formatBDDate = (dateString) => {
-    if (!dateString) return "-";
-    // If dateString is already YYYY-MM-DD, return it directly
-    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString;
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-CA", { timeZone: "Asia/Dhaka" });
-  };
 
+  // Format Date
+  const formatBDDate = useCallback((dateString) => {
+    if (!dateString) return "-";
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return dateString;
+
+    return new Date(dateString).toLocaleDateString("en-CA", {
+      timeZone: "Asia/Dhaka",
+    });
+  }, []);
+
+  // Fetch data
   useEffect(() => {
+    let mounted = true;
+
     const fetchCustomerData = async () => {
       try {
-        // Fetch single customer by customerID
-        const customerRes = await axiosSecure.get(`http://localhost:5000/customers/${customerID}`);
-        setCustomer(customerRes.data);
+        setLoading(true);
 
-        // Fetch orders for this customer (backend should filter by customerID)
-        const ordersRes = await axiosSecure.get(`http://localhost:5000/orders/customer/${customerID}`);
-        setOrders(ordersRes.data);
+        const [customerRes, ordersRes, recommendedRes] = await Promise.all([
+          axiosSecure.get(`/customers/${customerID}`),
+          axiosSecure.get(`/orders/customer/${customerID}`),
+          axiosSecure.get(`/products/recommended/${customerID}`),
+        ]);
+
+        if (mounted) {
+          setCustomer(customerRes.data || null);
+          setOrders(ordersRes.data || []);
+          setRecommended(recommendedRes.data || []);
+        }
       } catch (error) {
-        console.error("Error fetching customer data:", error);
+        console.error("Error fetching customer details:", error);
+
+        if (mounted) {
+          setCustomer(null);
+          setOrders([]);
+          setRecommended([]);
+        }
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
 
     fetchCustomerData();
-  }, [customerID]);
+    return () => (mounted = false);
+  }, [axiosSecure, customerID]);
 
+  // ------------------
+  // Loading
+  // ------------------
   if (loading)
-    return <div className="p-10 text-center text-violet-700 font-bold">Loading...</div>;
-
-  if (!customer)
-    return <div className="p-10 text-center text-red-600">Customer not found!</div>;
-
-  return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      {/* Customer Info */}
-      <div className="bg-white rounded-2xl shadow-md p-6 mb-8 flex flex-col md:flex-row items-center gap-6">
-        <img
-          src={customer.images?.[0] || "https://via.placeholder.com/150"}
-          alt={customer.name}
-          className="w-32 h-32 rounded-full object-cover border-4 border-violet-500"
-        />
-        <div>
-          <h2 className="text-2xl font-semibold text-violet-700">{customer.name}</h2>
-          <p className="text-gray-600">📍 Address: {customer.address}</p>
-          <p className="text-gray-600">📞 Phone: {customer.mobile}</p>
-          <p className="text-gray-600">🗓 Join Date: {formatBDDate(customer.joinDate)}</p>
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="text-center">
+          <p className="text-2xl font-extrabold" style={{ color: PRIMARY_COLOR_HEX }}>
+            Loading Customer Data...
+          </p>
+          <div
+            className="mt-4 animate-spin h-8 w-8 rounded-full border-4 border-solid 
+              border-current border-r-transparent"
+            style={{ borderColor: PRIMARY_COLOR_HEX }}
+          ></div>
         </div>
       </div>
+    );
 
-      {/* Customer Orders */}
-      <h3 className="text-2xl font-bold text-violet-700 mb-4">All Orders</h3>
-
-      {orders.length === 0 ? (
-        <p className="text-gray-500">No orders found for this customer.</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {orders.map((order) => (
-            <div
-              key={order._id || order.id}
-              className="bg-white rounded-2xl shadow-md hover:shadow-lg transition p-4 border-t-4 border-violet-500"
-            >
-                
-
-                {order.futureOrderDate && (
-                    <p className="text-gray-500 text-sm">
-                      OrderDate :  {formatBDDate(order.orderDate)}
-                    </p>
-                   
-                  )}
-              {order.products?.map((prod, idx) => (
-                <div key={idx} className="mb-2">
-                  <h4 className="font-semibold text-lg text-gray-800">{prod.productName}</h4>
-                  {/* <p className="text-gray-500 text-sm mt-1">
-                    🗓 Ordered on: {formatBDDate(prod.orderDate)}
-                  </p>
-                  {prod.futureOrderDate && (
-                    <p className="text-gray-500 text-sm">
-                      ⏳ Future Order: {formatBDDate(prod.futureOrderDate)}
-                    </p>
-                  )} */}
-                </div>
-              ))}
-              {order.images?.[0] && (
-                <img
-                  src={order.images[0]}
-                  alt="product"
-                  className="w-full h-40 object-cover rounded-lg mt-2"
-                />
-              )}
-            </div>
-          ))}
+  // ------------------
+  // Customer Not Found
+  // ------------------
+  if (!customer)
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="p-8 bg-white rounded-xl shadow-lg border-l-4 border-red-600">
+          <p className="text-xl font-bold text-red-600">
+            ⚠️ Customer with ID "{customerID}" not found!
+          </p>
         </div>
-      )}
+      </div>
+    );
+
+  // ------------------
+  // MAIN UI
+  // ------------------
+  return (
+    <div className="min-h-screen bg-gray-50 p-6 sm:p-10">
+      <div className="max-w-7xl mx-auto">
+
+        {/* ============================
+            CUSTOMER DETAILS
+        ============================ */}
+        <div
+          className="bg-white rounded-xl shadow-2xl p-6 sm:p-8 mb-10 border-t-8"
+          style={{ borderColor: PRIMARY_COLOR_HEX }}
+        >
+          <h1
+            className="text-3xl sm:text-4xl font-extrabold mb-3"
+            style={{ color: PRIMARY_COLOR_HEX }}
+          >
+            {customer.customerName}
+          </h1>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-2 gap-x-8 text-lg text-gray-700">
+            <p><strong>📞 মূল ফোন:</strong> {customer.phone}</p>
+            <p><strong>📞 বিকল্প ফোন:</strong> {customer.altPhone || "N/A"}</p>
+            <p><strong>💬 WhatsApp:</strong> {customer.whatsapp || "N/A"}</p>
+            <p><strong>🏠 বাড়ি নম্বর:</strong> {customer.houseNumber || "N/A"}</p>
+            <p><strong>🛣 রোড নম্বর:</strong> {customer.roadNumber || "N/A"}</p>
+            <p><strong>🏢 ব্লক নম্বর:</strong> {customer.blockNumber || "N/A"}</p>
+
+            <p><strong>📍 সম্পূর্ণ ঠিকানা:</strong> {customer.address || "N/A"}</p>
+            <p><strong>📅 যোগদানের তারিখ:</strong> {customer.joinDate || "N/A"}</p>
+          </div>
+        </div>
+
+        {/* ============================
+            RECOMMENDED PRODUCTS
+        ============================ */}
+        <div className="mb-10">
+          <h2
+            className="text-2xl font-extrabold mb-5"
+            style={{ color: PRIMARY_COLOR_HEX }}
+          >
+            ⭐ Recommended Products
+          </h2>
+
+          {recommended.length === 0 ? (
+            <p className="text-gray-500 italic">No recommended products selected.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {recommended.map((prod, i) => (
+                <RecommendedProductCard key={i} product={prod} />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* ============================
+            ORDER HISTORY
+        ============================ */}
+        <div>
+          <h2
+            className="text-2xl font-extrabold mb-5"
+            style={{ color: PRIMARY_COLOR_HEX }}
+          >
+            🧾 Order History
+          </h2>
+
+          {orders.length === 0 ? (
+            <p className="text-gray-500 italic">No orders found.</p>
+          ) : (
+            <div className="space-y-6">
+              {orders.map((order) => (
+                <OrderCard key={order._id} order={order} formatBDDate={formatBDDate} />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
-};
+});
 
 export default CustomerDetailsPage;

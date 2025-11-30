@@ -2,104 +2,174 @@ import React, { useContext, useState } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import useAxiosSecure from "../../../hook/UseAxiosSecure";
 
+// Define the two brand color variables
+const PRIMARY_COLOR = "#A7003C"; // Rich Reddish-Maroon
+const SECONDARY_COLOR = "#AB50FF"; // Vibrant Violet/Purple
+
 const SignupPage = () => {
   const { signUpUser, updateUser } = useContext(AuthContext);
+  const axiosSecure = useAxiosSecure();
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const axiosSecure = useAxiosSecure()
+  const [success, setSuccess] = useState("");
+
+  // Common styles for inputs and labels
+  const inputClass = "w-full px-4 py-3 border rounded-xl shadow-inner focus:ring-2 outline-none transition";
+  const labelClass = "block text-sm font-bold text-gray-700 mb-1";
+  
+  // Custom style object for the input focus ring (Secondary Color)
+  const inputFocusStyle = {
+    '--tw-ring-color': SECONDARY_COLOR,
+    borderColor: '#ccc', // A neutral border
+  };
+
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
 
     const form = e.target;
-    const signupData = {
-      name: form.name.value,
-      email: form.email.value,
-      password: form.password.value,
-      confirmPassword: form.confirmPassword.value,
-    };
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const password = form.password.value.trim();
+    const confirmPassword = form.confirmPassword.value.trim();
 
-    // Password match validation
-    if (signupData.password !== signupData.confirmPassword) {
+    // Basic validations
+    if (!name || !email || !password || !confirmPassword) {
+      setError("Please fill out all fields.");
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
       setError("Passwords do not match!");
       return;
     }
 
     setLoading(true);
     try {
-
-      // 1️⃣ Firebase Signup
-      
-      const res = await signUpUser(signupData.email, signupData.password);
-      console.log("Firebase signup successful:", res.user);
+      // 1️⃣ Create user with Firebase
+      const res = await signUpUser(email, password);
+      console.log("✅ Firebase signup successful:", res.user);
 
       // 2️⃣ Update Firebase displayName
-      await updateUser(signupData.name);
+      await updateUser(name);
 
-      // 3️⃣ Call backend API to save user in DB
-      const userForDB = {
-        name: signupData.name,
-        email: signupData.email,
-        role: "user",
-      };
-
-      const apiRes = await axiosSecure.post("http://localhost:5000/users", userForDB);
-      console.log("User saved in DB:", apiRes.data);
+      // 3️⃣ Save user in backend database
+      const userForDB = { name, email, role: "user" };
+      const apiRes = await axiosSecure.post("/users", userForDB);
+      console.log("✅ User saved in DB:", apiRes.data);
 
       form.reset();
-      alert("Signup successful!");
+      setSuccess("Account created successfully! You can now log in.");
     } catch (err) {
-      console.error("Signup error:", err);
-      setError(err.message || "Failed to sign up");
+      console.error("❌ Signup error:", err);
+      setError(err.message || "Failed to create account. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-purple-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-2xl shadow-lg">
-        <h2 className="text-2xl font-bold text-center text-purple-700">Sign Up</h2>
+    // Background gradient for a soft look
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
+      <div 
+        className="w-full max-w-md bg-white p-10 rounded-3xl shadow-2xl border-t-4 transition-transform duration-500 transform hover:scale-[1.01]"
+        style={{ borderColor: PRIMARY_COLOR }} // Top border in Primary Color
+      >
+        {/* Title - Primary Color */}
+        <h2 
+          className="text-4xl font-extrabold text-center mb-6 tracking-tight"
+          style={{ color: PRIMARY_COLOR }}
+        >
+          Create Account 📝
+        </h2>
 
-        {error && <p className="text-red-600 text-center">{error}</p>}
+        {/* Error & Success Messages */}
+        {error && (
+          <div className="bg-red-50 border border-red-300 text-red-700 p-3 rounded-xl text-center mb-4">
+            <p className="font-semibold text-sm">{error}</p>
+          </div>
+        )}
+        {success && (
+          <div className="bg-green-50 border border-green-300 text-green-700 p-3 rounded-xl text-center mb-4">
+            <p className="font-semibold text-sm">{success}</p>
+          </div>
+        )}
 
-        <form className="space-y-4" onSubmit={handleSignupSubmit}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
-            required
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
-            required
-          />
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 outline-none"
-            required
-          />
+        <form onSubmit={handleSignupSubmit} className="space-y-5">
+          {/* Name */}
+          <div>
+            <label className={labelClass}>Full Name</label>
+            <input
+              type="text"
+              name="name"
+              placeholder="John Doe"
+              className={inputClass}
+              style={inputFocusStyle}
+              required
+            />
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className={labelClass}>Email Address</label>
+            <input
+              type="email"
+              name="email"
+              placeholder="example@email.com"
+              className={inputClass}
+              style={inputFocusStyle}
+              required
+            />
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className={labelClass}>Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter password"
+              className={inputClass}
+              style={inputFocusStyle}
+              required
+            />
+          </div>
+
+          {/* Confirm Password */}
+          <div>
+            <label className={labelClass}>Confirm Password</label>
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Re-enter password"
+              className={inputClass}
+              style={inputFocusStyle}
+              required
+            />
+          </div>
+
+          {/* Submit Button - Secondary Color */}
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-2 font-semibold text-white rounded-lg ${
-              loading ? "bg-purple-400" : "bg-purple-600 hover:bg-purple-700"
+            className={`w-full py-3 font-extrabold text-white rounded-xl text-lg transition shadow-lg mt-8 duration-300 hover:brightness-110 active:scale-[0.99] ${
+              loading
+                ? "opacity-70 cursor-not-allowed"
+                : ""
             }`}
+            style={{ 
+                backgroundColor: SECONDARY_COLOR, 
+                opacity: loading ? 0.7 : 1, 
+            }}
           >
-            {loading ? "Signing Up..." : "Sign Up"}
+            {loading ? "Creating Account..." : "Sign Up"}
           </button>
         </form>
       </div>
